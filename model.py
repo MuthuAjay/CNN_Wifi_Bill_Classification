@@ -3,16 +3,45 @@ from torch import nn
 
 
 class ClassifyWifiBill(nn.Module):
-
     def __init__(self,
                  input_shape: int,
                  output_classes: int,
                  hidden_units: int = 10) -> None:
         super().__init__()
-        """
-        Todo: Need to add Conv Blocks 
-        
-        """
+        self.conv_block_1 = nn.Sequential(
+            nn.Conv2d(in_channels=input_shape,
+                      out_channels=hidden_units,
+                      padding=0,
+                      stride=1,
+                      kernel_size=3),
+            nn.ReLU(),
+            nn.Conv2d(in_channels=hidden_units,
+                      out_channels=hidden_units,
+                      padding=0,
+                      stride=1,
+                      kernel_size=3),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2,
+                         stride=2)
+        )
+
+        self.conv_block_2 = nn.Sequential(
+            nn.Conv2d(in_channels=hidden_units,
+                      out_channels=hidden_units,
+                      padding=0,
+                      stride=1,
+                      kernel_size=3,
+                      ),
+            nn.ReLU(),
+            nn.Conv2d(in_channels=hidden_units,
+                      out_channels=hidden_units,
+                      padding=0,
+                      stride=1,
+                      kernel_size=3),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2,
+                         stride=2)
+        )
         self.conv_output_size = self.get_conv_output_size(input_shape=input_shape)
         self.classifier = nn.Sequential(
             nn.Flatten(),
@@ -21,12 +50,7 @@ class ClassifyWifiBill(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        :param x:
-        :return:
-        """
-        # //Todo
-        return torch.Tensor()
+        return self.classifier(self.conv_block_2(self.conv_block_1(x)))
 
     def get_conv_output_size(self,
                              input_shape: int,

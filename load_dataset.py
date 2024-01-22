@@ -71,7 +71,7 @@ def main(dir_name: str | Path = "wifi_bills") -> Path:
     """
     logging.basicConfig(level=logging.INFO)
 
-    custom_dataset = CustomData(data_path=r"C:\Users\CD138JR\PycharmProjects\DeepLearning\CNN\data")
+    custom_dataset = CustomData(data_path=r"/content/CNN_Wifi_Bill_Classification/data")
 
     path = custom_dataset.data_path / dir_name
     present = custom_dataset.local_drive(path=path)

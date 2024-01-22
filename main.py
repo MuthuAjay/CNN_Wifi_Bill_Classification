@@ -20,6 +20,7 @@ class Main(TransformData, Train):
         self.BATCH_SIZE = None
         self.image_path: str | Path = ''
         self.directory = directory
+        self.classes = None
 
     def check_dataset(self, directory):
         """
@@ -83,6 +84,7 @@ class Main(TransformData, Train):
                                                                       test_data=test_data,
                                                                       batch_size=self.BATCH_SIZE)
 
+        self.classes = train_data.classes
         # Initialize the model based on user-defined parameters
         self.model = self.initialize_model(input_shape=input_shape,
                                            hidden_units=hidden_units,
@@ -99,6 +101,7 @@ class Main(TransformData, Train):
 
         print(pd.DataFrame(self.results)),
         plot_loss_curves(self.results)
+        return self.results
 
 
 if __name__ == "__main__":
