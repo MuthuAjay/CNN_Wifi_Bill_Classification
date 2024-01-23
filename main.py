@@ -21,6 +21,7 @@ class Main(TransformData, Train):
         self.image_path: str | Path = ''
         self.directory = directory
         self.classes = None
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     def check_dataset(self, directory):
         """
@@ -79,7 +80,7 @@ class Main(TransformData, Train):
 
         self.BATCH_SIZE = 32
         self.check_dataset(directory=self.directory)
-        train_data, test_data = self.load_data(image_path=self.image_path,image_size= (224,224))
+        train_data, test_data = self.load_data(image_path=self.image_path, image_size=(224, 224))
         train_data_loader, test_data_loader = self.create_dataloaders(train_data=train_data,
                                                                       test_data=test_data,
                                                                       batch_size=self.BATCH_SIZE)
@@ -89,7 +90,7 @@ class Main(TransformData, Train):
         self.model = self.initialize_model(input_shape=input_shape,
                                            hidden_units=hidden_units,
                                            output_shape=len(train_data.classes),
-                                           )
+                                           ).to(self.device)
         # Train the model and store the results
         self.results = self.train(model=self.model,
                                   train_dataloader=train_data_loader,
