@@ -6,22 +6,21 @@ from load_dataset import main
 from train import Train
 from model import ClassifyWifiBill
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional, Tuple
 import pandas as pd
 from plot import plot_loss_curves
+from handler import ModelHandler
 
 
-class Main(TransformData, Train):
-    def __init__(self, directory):
+class Main(TransformData, Train, ModelHandler):
+    def __init__(self, directory, image_size):
         super(Train, self).__init__()
         super(TransformData, self).__init__()
-        self.results: Dict = {}
-        self.model = None
+        super(ModelHandler, self).__init__()
         self.BATCH_SIZE = None
         self.image_path: str | Path = ''
         self.directory = directory
-        self.classes = None
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.image_size: Tuple[int,int] = image_size
 
     def check_dataset(self, directory):
         """
@@ -58,13 +57,14 @@ class Main(TransformData, Train):
         print(input_shape, output_shape, hidden_units)
         return ClassifyWifiBill(input_shape=input_shape,
                                 hidden_units=hidden_units,
-                                output_classes=output_shape)
+                                output_classes=output_shape,
+                                height=self.image_size[0],
+                                weight=self.image_size[1])
 
     def process(self,
                 input_shape: Optional[int] = 3,
                 hidden_units: Optional[int] = 10,
                 epochs: int = 5,
-
                 ):
         """
         Process the chosen action (train or predict) based on user input.
@@ -80,7 +80,8 @@ class Main(TransformData, Train):
 
         self.BATCH_SIZE = 32
         self.check_dataset(directory=self.directory)
-        train_data, test_data = self.load_data(image_path=self.image_path, image_size=(224, 224))
+        train_data, test_data = self.load_data(image_path=self.image_path,
+                                               image_size=self.image_size)
         train_data_loader, test_data_loader = self.create_dataloaders(train_data=train_data,
                                                                       test_data=test_data,
                                                                       batch_size=self.BATCH_SIZE)
@@ -89,7 +90,7 @@ class Main(TransformData, Train):
         # Initialize the model based on user-defined parameters
         self.model = self.initialize_model(input_shape=input_shape,
                                            hidden_units=hidden_units,
-                                           output_shape=len(train_data.classes),
+                                           output_shape=len(train_data.classes)
                                            ).to(self.device)
         # Train the model and store the results
         self.results = self.train(model=self.model,
@@ -110,7 +111,8 @@ if __name__ == "__main__":
 
     folder = r"wifi_bills"
     try:
-        main_instance = Main(directory=folder)
+        main_instance = Main(directory=folder,
+                             image_size=(224,224))
         main_instance.process(input_shape=3,
                               hidden_units=20,
                               epochs=10)

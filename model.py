@@ -6,7 +6,9 @@ class ClassifyWifiBill(nn.Module):
     def __init__(self,
                  input_shape: int,
                  output_classes: int,
-                 hidden_units: int = 10) -> None:
+                 hidden_units: int = 10,
+                 height: int = 64,
+                 weight: int = 64) -> None:
         super().__init__()
         self.conv_block_1 = nn.Sequential(
             nn.Conv2d(in_channels=input_shape,
@@ -42,7 +44,9 @@ class ClassifyWifiBill(nn.Module):
             nn.MaxPool2d(kernel_size=2,
                          stride=2)
         )
-        self.conv_output_size = self.get_conv_output_size(input_shape=input_shape)
+        self.conv_output_size = self.get_conv_output_size(input_shape=input_shape,
+                                                          height=height,
+                                                          weight=weight)
         self.classifier = nn.Sequential(
             nn.Flatten(),
             nn.Linear(in_features=self.conv_output_size,
