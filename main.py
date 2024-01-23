@@ -20,7 +20,7 @@ class Main(TransformData, Train, ModelHandler):
         self.BATCH_SIZE = None
         self.image_path: str | Path = ''
         self.directory = directory
-        self.image_size: Tuple[int,int] = image_size
+        self.image_size: Tuple[int, int] = image_size
 
     def check_dataset(self, directory):
         """
@@ -37,8 +37,8 @@ class Main(TransformData, Train, ModelHandler):
         except ValueError:
             logging.error("Invalid input. Please enter a numeric value (1 or 2).")
 
-    @staticmethod
     def initialize_model(
+            self,
             input_shape: int,
             output_shape: int,
             hidden_units: int = 10,
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     folder = r"wifi_bills"
     try:
         main_instance = Main(directory=folder,
-                             image_size=(224,224))
+                             image_size=(224, 224))
         main_instance.process(input_shape=3,
                               hidden_units=20,
                               epochs=10)
