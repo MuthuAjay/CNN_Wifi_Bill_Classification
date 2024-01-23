@@ -107,7 +107,7 @@ class Main(TransformData, Train):
 if __name__ == "__main__":
     logging.info("Train Your Own Model or Predict the image")
 
-    folder = r""
+    folder = r"wifi_bills"
     try:
         main_instance = Main(directory=folder)
         main_instance.process(input_shape=3,

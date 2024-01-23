@@ -33,10 +33,10 @@ class Train:
         train_loss, train_acc = 0.0, 0.0
         for batch, (X, y) in enumerate(dataloader):
             X, y = X.to(self.device), y.to(self.device)
-            optimizer.zero_grad()
             y_pred_logits = model(X)
             loss = loss_fn(y_pred_logits, y)
             train_loss += loss.item()
+            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
