@@ -40,6 +40,7 @@ class TransformData:
     def load_data(self,
                   image_path: str | Path,
                   transform: bool = True,
+                  image_size: Tuple[int, int] = (64,44),
                   augment: bool = True) -> Tuple[datasets.ImageFolder, datasets.ImageFolder]:
         """
         Load training and testing data.
@@ -48,6 +49,7 @@ class TransformData:
             image_path (Path): Path to the root directory containing 'train' and 'test' subdirectories.
             transform (bool): Whether to apply data transformation.
             augment (bool): Whether to apply data augmentation for training.
+            image_size (Tuple[int, int] : size of the image to transform where default is (64,44),
 
         Returns:
             Tuple[datasets.ImageFolder, datasets.ImageFolder]: Train and test datasets.
@@ -61,7 +63,8 @@ class TransformData:
         if not (self.train_dir.exists() and self.test_dir.exists()):
             raise FileNotFoundError("Train or test directory not found.")
 
-        train_transform, test_transform = self.data_transform(augment=augment)
+        train_transform, test_transform = self.data_transform(augment=augment,
+                                                              image_size=image_size)
 
         train_data = datasets.ImageFolder(root=self.train_dir,
                                           transform=train_transform,

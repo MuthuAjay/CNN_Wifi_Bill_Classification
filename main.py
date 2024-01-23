@@ -79,7 +79,7 @@ class Main(TransformData, Train):
 
         self.BATCH_SIZE = 32
         self.check_dataset(directory=self.directory)
-        train_data, test_data = self.load_data(image_path=self.image_path)
+        train_data, test_data = self.load_data(image_path=self.image_path,image_size= (224,224))
         train_data_loader, test_data_loader = self.create_dataloaders(train_data=train_data,
                                                                       test_data=test_data,
                                                                       batch_size=self.BATCH_SIZE)
